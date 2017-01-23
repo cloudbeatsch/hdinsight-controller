@@ -6,9 +6,6 @@
       "value": "examplededicatedfunctionapp" 
     },
 
-    "repoURL": { "value": "https://github.com/CatalystCode/hdinsight-controller.git" },
-    "branch": { "value": "master" },
-
 		"servicePrincipalClientId": { "value": "00000000-0000-0000-0000-000000000000" },
 		"servicePrincipalSecret": { "value": "SERVICE PRINCIPAL CLIENT SECRET" },
 		"servicePrincipalDomain": { "value": "00000000-0000-0000-0000-000000000000" },

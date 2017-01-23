@@ -46,55 +46,54 @@
         "description": "Storage Account type"
       }
     },
-    "repoURL": {
-      "type": "string",
-      "defaultValue": "https://github.com/morsh/functions.git",
-      "metadata": {
-        "description": "The URL for the GitHub repository that contains the project to deploy."
-      }
-    },
-    "branch": {
-      "type": "string",
-      "defaultValue": "master",
-      "metadata": {
-        "description": "The branch of the GitHub repository to use."
-      }
-    },
 
     "servicePrincipalClientId": { "type": "string" },
-		"servicePrincipalSecret": { "type": "string" },
-		"servicePrincipalDomain": { "type": "string" },
-		"servicePrincipalSubscriptionId": { "type": "string" },
+    "servicePrincipalSecret": { "type": "string" },
+    "servicePrincipalDomain": { "type": "string" },
+    "servicePrincipalSubscriptionId": { "type": "string" },
 
-		"clusterStorageAccountName": { "type": "string" },
-		"clusterStorageAccountKey": { "type": "string" },
-		"clusterContainer": { "type": "string" },
+    "clusterStorageAccountName": { "type": "string" },
+    "clusterStorageAccountKey": { "type": "string" },
+    "clusterContainer": { "type": "string" },
 
-		"dataStorageAccountName": { "type": "string" },
-		"dataStorageAccountKey": { "type": "string" },
+    "dataStorageAccountName": { "type": "string" },
+    "dataStorageAccountKey": { "type": "string" },
 
-		"clusterName": { "type": "string" },
-		"clusterApiVersion": { "type": "string" },
-		"tags": { "type": "string" },
-		"clusterVersion": { "type": "string"},
-		"osType": { "type": "string" },
-		"clusterType": { "type": "string" },
-		"clusterLoginUserName": { "type": "string" },
-		"clusterLoginPassword": { "type": "string" },
+    "clusterName": { "type": "string" },
+    "clusterApiVersion": { "type": "string" },
+    "tags": { "type": "string" },
+    "clusterVersion": { "type": "string" },
+    "osType": { "type": "string" },
+    "clusterType": { "type": "string" },
+    "clusterLoginUserName": { "type": "string" },
+    "clusterLoginPassword": { "type": "string" },
 
-		"clusterNodeSize": { "type": "string" },
-		"clusterWorkerNodeCount": { "type": "string" },
-		"sshUserName": { "type": "string" },
-		"sshPassword": { "type": "string" }, 
+    "clusterNodeSize": { "type": "string" },
+    "clusterWorkerNodeCount": { "type": "string" },
+    "sshUserName": { "type": "string" },
+    "sshPassword": { "type": "string" },
 
-		"inputQueueName": { "type": "string" },
-		"sendAlertUrl": { "type": "string" },
-		"localFileToRun": { "type": "string" },
+    "inputQueueName": { "type": "string" },
+    "sendAlertUrl": { "type": "string" },
+    "localFileToRun": { "type": "string" },
 
-		"jobExecutionIntervalInSeconds": { 
-      "type": "int", 
+    "jobExecutionIntervalInSeconds": {
+      "type": "int",
       "defaultValue": 60
-    }     
+    },
+
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    }
   },
   "variables": {
     "webAppName": "[parameters('appName')]",
@@ -139,25 +138,11 @@
       "resources": [
         {
           "apiVersion": "2015-04-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
-          ],
-          "properties": {
-            "RepoUrl": "[parameters('repoURL')]",
-            "branch": "[parameters('branch')]",
-            "IsManualIntegration": false
-          }
-        },
-        {
-          "apiVersion": "2015-04-01",
           "name": "appsettings",
           "type": "config",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('webAppName'))]",
-            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-            "[resourceId('Microsoft.Web/sites/sourcecontrols', variables('webAppName'), 'web')]"
+            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
           ],
           "properties": {
             "WEBSITE_NODE_DEFAULT_VERSION": "4.4.7",
@@ -212,7 +197,8 @@
             "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
           ],
           "properties": {
-            "alwaysOn": "true"
+            "alwaysOn": "true",
+            "scmType": "LocalGit"
           }
         }
       ]
