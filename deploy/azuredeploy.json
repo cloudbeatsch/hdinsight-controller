@@ -145,8 +145,8 @@
             "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
           ],
           "properties": {
-            "WEBSITE_NODE_DEFAULT_VERSION": "4.4.7",
-
+            "WEBSITE_NODE_DEFAULT_VERSION": "6.9.1",
+            "SCM_COMMAND_IDLE_TIMEOUT": "7200",
             "STORAGE_ACCOUNT": "[variables('storageAccountName')]",
             "STORAGE_KEY": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1]",
             "LOG_STORAGE_ACCOUNT": "[variables('storageAccountName')]",
