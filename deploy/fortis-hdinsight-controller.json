@@ -46,25 +46,15 @@
         "description": "Storage Account type"
       }
     },
-    "repoURL": {
-      "type": "string",
-      "defaultValue": "https://github.com/CatalystCode/hdinsight-controller.git",
-      "metadata": {
-        "description": "The URL for the GitHub repository that contains the project to deploy."
-      }
-    },
-    "branch": {
-      "type": "string",
-      "defaultValue": "master",
-      "metadata": {
-        "description": "The branch of the GitHub repository to use."
-      }
-    },
 
     "servicePrincipalClientId": { "type": "string" },
     "servicePrincipalSecret": { "type": "string" },
     "servicePrincipalDomain": { "type": "string" },
     "servicePrincipalSubscriptionId": { "type": "string" },
+
+    "clusterStorageAccountName": { "type": "string" },
+    "clusterStorageAccountKey": { "type": "string" },
+    "clusterContainer": { "type": "string" },
 
     "dataStorageAccountName": { "type": "string" },
     "dataStorageAccountKey": { "type": "string" },
@@ -84,21 +74,31 @@
     "sshPassword": { "type": "string" },
 
     "inputQueueName": { "type": "string" },
-
-    "sendAlertUrl": {
-      "type": "string",
-      "defaultValue": "http://none.none"
-    },
+    "sendAlertUrl": { "type": "string" },
+    "localFileToRun": { "type": "string" },
 
     "jobExecutionIntervalInSeconds": {
       "type": "int",
       "defaultValue": 60
+    },
+
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
     }
   },
   "variables": {
     "webAppName": "[parameters('appName')]",
     "hostingPlanName": "[parameters('appName')]",
-    "storageAccountName": "[concat(replace(parameters('appName'),'-',''),'store')]"
+    "storageAccountName": "[concat(replace(parameters('appName'),'-',''),'store')]"      
   },
   "resources": [
     {
@@ -138,30 +138,16 @@
       "resources": [
         {
           "apiVersion": "2015-04-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
-          ],
-          "properties": {
-            "RepoUrl": "[parameters('repoURL')]",
-            "branch": "[parameters('branch')]",
-            "IsManualIntegration": true
-          }
-        },
-        {
-          "apiVersion": "2015-04-01",
           "name": "appsettings",
           "type": "config",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('webAppName'))]",
-            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-            "[resourceId('Microsoft.Web/sites/sourcecontrols', variables('webAppName'), 'web')]"
+            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
           ],
           "properties": {
             "WEBSITE_NODE_DEFAULT_VERSION": "6.9.1",
+            "SCM_COMMAND_IDLE_TIMEOUT": "7200",
             "scmType": "LocalGit",
-
             "STORAGE_ACCOUNT": "[variables('storageAccountName')]",
             "STORAGE_KEY": "[listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1]",
             "LOG_STORAGE_ACCOUNT": "[variables('storageAccountName')]",
@@ -211,7 +197,8 @@
             "[resourceId('Microsoft.Web/sites', variables('webAppName'))]"
           ],
           "properties": {
-            "alwaysOn": "true"
+            "alwaysOn": "true",
+            "scmType": "LocalGit"
           }
         }
       ]
